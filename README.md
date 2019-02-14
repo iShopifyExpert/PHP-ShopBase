@@ -17,6 +17,9 @@ $p2 = $products[1]->addCategory('DEF')->setDescription('Product 5678 is awesome'
 
 $shop = new Shop($products);
 
+$shop->updateProduct($p1->getArticleNumber(), $p1);
+$shop->updateProduct('5678', $p2);
+
 $shop->addProduct(new Product('9101', 'Product 9101', new Price('50', 'EUR')));
 
 $shop->getProducts();
