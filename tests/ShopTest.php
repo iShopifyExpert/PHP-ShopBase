@@ -4,6 +4,8 @@ use PHPUnit\Framework\TestCase;
 use jregner\ShopBase\Shop;
 use jregner\ShopBase\Product;
 use jregner\ShopBase\Types\Price;
+use jregner\ShopBase\Exceptions\Product\ProductAlreadyExistsException;
+use jregner\ShopBase\Exceptions\Product\ProductInvalidArticleNumberException;
 
 class ShopTest extends TestCase
 {
@@ -66,6 +68,14 @@ class ShopTest extends TestCase
         );
     }
 
+    public function testGetProduct()
+    {
+        $this->assertEquals(
+            $this->products[0],
+            $this->shop->getProduct('0')
+        );
+    }
+
     public function testAddProduct()
     {
         $product = new Product('11', 'Product Number 11', new Price(1200, 'EUR'));
@@ -73,12 +83,40 @@ class ShopTest extends TestCase
         $this->shop->addProduct($product);
 
         $this->assertEquals(
-            array_merge(
-                $this->products,
-                [$product]
-            ),
-            $this->shop->getProducts()
+            $product,
+            $this->shop->getProduct($product->getArticleNumber())
         );
+    }
+
+    public function testAddProductWithAlreadyExistingProduct()
+    {
+        $this->expectException(ProductAlreadyExistsException::class);
+
+        $this->shop->addProduct(new Product('0', 'Product Number 0', new Price(1200, 'EUR')));
+    }
+
+    public function testUpdateProduct()
+    {
+        $product = new Product('0', 'Product Number 00 Special', new Price(2400, 'EUR'));
+
+        $this->shop->updateProduct($product->getArticleNumber(), $product);
+
+        $this->assertEquals(
+            $product,
+            $this->shop->getProduct($product->getArticleNumber())
+        );
+
+        $this->assertEquals(
+            $product->getName(),
+            $this->shop->getProduct($product->getArticleNumber())->getName()
+        );
+    }
+
+    public function testUpdateProductWithInvalidArticleNumber()
+    {
+        $this->expectException(ProductInvalidArticleNumberException::class);
+
+        $this->shop->updateProduct('1', new Product('0', 'Product Number 0', new Price(1200, 'EUR')));
     }
 
     public function testHasProduct()

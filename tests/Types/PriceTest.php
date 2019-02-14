@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use jregner\ShopBase\Types\Price;
+use jregner\ShopBase\Exceptions\Types\InvalidCurrencyException;
 
 class PriceTest extends TestCase
 {
@@ -11,6 +12,13 @@ class PriceTest extends TestCase
             Price::class,
             new Price(1200, 'EUR')
         );
+    }
+
+    public function testConstructWithInvalidCurrency()
+    {
+        $this->expectException(InvalidCurrencyException::class);
+
+        $price = new Price(1200, 'EURO');
     }
 
     public function testGetValue()
