@@ -116,7 +116,7 @@ class ProductTest extends TestCase
     {
         $this->assertEquals(
             [],
-            $this->product->getCategories()
+            $this->product->getCategories()->toArray()
         );
     }
 
@@ -132,7 +132,7 @@ class ProductTest extends TestCase
                 'My Category One',
                 'My Category Two',
             ],
-            $this->product->getCategories()
+            $this->product->getCategories()->toArray()
         );
     }
 
@@ -151,7 +151,7 @@ class ProductTest extends TestCase
                 'My Category Two',
                 'My Category Three',
             ],
-            $this->product->getCategories()
+            $this->product->getCategories()->toArray()
         );
     }
 
@@ -181,9 +181,9 @@ class ProductTest extends TestCase
 
         $this->assertEquals(
             [
-                'My Category Two',
+                1 => 'My Category Two',
             ],
-            $this->product->getCategories()
+            $this->product->getCategories()->toArray()
         );
     }
 }

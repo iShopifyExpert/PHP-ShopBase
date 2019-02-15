@@ -2,12 +2,13 @@
 
 namespace jregner\ShopBase;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use jregner\ShopBase\Exceptions\Product\ProductAlreadyExistsException;
-use jregner\ShopBase\Exceptions\Product\ProductInvalidArticleNumberException;
 
 class Shop
 {
-    protected $products = [];
+    /** @var ArrayCollection */
+    protected $products;
 
     /**
      * Shop constructor.
@@ -36,28 +37,7 @@ class Shop
             throw new ProductAlreadyExistsException('The product with article number ' . $product->getArticleNumber() . ' is already added!');
         }
 
-        $this->products[$product->getArticleNumber()] = $product;
-
-        return $this;
-    }
-
-    /**
-     * Update shop product.
-     *
-     * @param string  $articleNumber
-     * @param Product $product
-     *
-     * @return Shop
-     *
-     * @throws ProductInvalidArticleNumberException
-     */
-    public function updateProduct(string $articleNumber, Product $product): self
-    {
-        if ($product->getArticleNumber() !== $articleNumber) {
-            throw new ProductInvalidArticleNumberException('Article number does not match the product article number!');
-        }
-
-        $this->products[$articleNumber] = $product;
+        $this->products->set($product->getArticleNumber(), $product);
 
         return $this;
     }
@@ -71,7 +51,7 @@ class Shop
      */
     public function removeProduct(string $articleNumber): self
     {
-        unset($this->products[$articleNumber]);
+        $this->products->remove($articleNumber);
 
         return $this;
     }
@@ -85,7 +65,7 @@ class Shop
      */
     public function hasProduct(string $articleNumber): bool
     {
-        return array_key_exists($articleNumber, $this->products);
+        return $this->products->containsKey($articleNumber);
     }
 
     /**
@@ -97,7 +77,7 @@ class Shop
      */
     public function getProduct(string $articleNumber): Product
     {
-        return $this->products[$articleNumber];
+        return $this->products->get($articleNumber);
     }
 
     /**
@@ -109,9 +89,10 @@ class Shop
      *
      * @throws ProductAlreadyExistsException
      */
-    public function setProducts(array $products)
+    public function setProducts(array $products): self
     {
-        $this->products = [];
+        $this->products = new ArrayCollection();
+
         foreach ($products as $product) {
             $this->addProduct($product);
         }
@@ -122,9 +103,9 @@ class Shop
     /**
      * Get shop products.
      *
-     * @return array
+     * @return ArrayCollection
      */
-    public function getProducts(): array
+    public function getProducts(): ArrayCollection
     {
         return $this->products;
     }

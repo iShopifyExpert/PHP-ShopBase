@@ -5,7 +5,6 @@ use jregner\ShopBase\Shop;
 use jregner\ShopBase\Product;
 use jregner\ShopBase\Types\Price;
 use jregner\ShopBase\Exceptions\Product\ProductAlreadyExistsException;
-use jregner\ShopBase\Exceptions\Product\ProductInvalidArticleNumberException;
 
 class ShopTest extends TestCase
 {
@@ -50,7 +49,7 @@ class ShopTest extends TestCase
     {
         $this->assertEquals(
             $this->products,
-            $this->shop->getProducts()
+            $this->shop->getProducts()->toArray()
         );
     }
 
@@ -64,7 +63,7 @@ class ShopTest extends TestCase
 
         $this->assertEquals(
             $products,
-            $this->shop->getProducts()
+            $this->shop->getProducts()->toArray()
         );
     }
 
@@ -95,30 +94,6 @@ class ShopTest extends TestCase
         $this->shop->addProduct(new Product('0', 'Product Number 0', new Price(1200, 'EUR')));
     }
 
-    public function testUpdateProduct()
-    {
-        $product = new Product('0', 'Product Number 00 Special', new Price(2400, 'EUR'));
-
-        $this->shop->updateProduct($product->getArticleNumber(), $product);
-
-        $this->assertEquals(
-            $product,
-            $this->shop->getProduct($product->getArticleNumber())
-        );
-
-        $this->assertEquals(
-            $product->getName(),
-            $this->shop->getProduct($product->getArticleNumber())->getName()
-        );
-    }
-
-    public function testUpdateProductWithInvalidArticleNumber()
-    {
-        $this->expectException(ProductInvalidArticleNumberException::class);
-
-        $this->shop->updateProduct('1', new Product('0', 'Product Number 0', new Price(1200, 'EUR')));
-    }
-
     public function testHasProduct()
     {
         $this->assertTrue(
@@ -138,7 +113,7 @@ class ShopTest extends TestCase
 
         $this->assertEquals(
             $this->products,
-            $this->shop->getProducts()
+            $this->shop->getProducts()->toArray()
         );
     }
 }

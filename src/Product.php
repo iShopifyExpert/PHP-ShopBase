@@ -2,6 +2,7 @@
 
 namespace jregner\ShopBase;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use jregner\ShopBase\Types\Price;
 
 class Product
@@ -12,7 +13,7 @@ class Product
     protected $price;
     protected $description;
     protected $stock;
-    protected $categories = [];
+    protected $categories;
 
     /**
      * Product constructor.
@@ -26,6 +27,8 @@ class Product
         $this->articleNumber = $articleNumber;
         $this->name = $name;
         $this->price = $price;
+
+        $this->categories = new ArrayCollection();
     }
 
     /**
@@ -143,7 +146,7 @@ class Product
      */
     public function addCategory(string $category): self
     {
-        $this->categories[] = $category;
+        $this->categories->add($category);
 
         return $this;
     }
@@ -157,11 +160,7 @@ class Product
      */
     public function removeCategory(string $category): self
     {
-        if (false !== $key = array_search($category, $this->categories, true)) {
-            unset($this->categories[$key]);
-
-            $this->categories = array_values($this->categories);
-        }
+        $this->categories->removeElement($category);
 
         return $this;
     }
@@ -175,7 +174,7 @@ class Product
      */
     public function hasCategory(string $category): bool
     {
-        return in_array($category, $this->categories, true);
+        return $this->categories->contains($category);
     }
 
     /**
@@ -187,9 +186,7 @@ class Product
      */
     public function setCategories(array $categories): self
     {
-        foreach ($categories as $category) {
-            $this->addCategory($category);
-        }
+        $this->categories = new ArrayCollection($categories);
 
         return $this;
     }
@@ -197,9 +194,9 @@ class Product
     /**
      * Get product categories.
      *
-     * @return array
+     * @return ArrayCollection
      */
-    public function getCategories(): array
+    public function getCategories(): ArrayCollection
     {
         return $this->categories;
     }
