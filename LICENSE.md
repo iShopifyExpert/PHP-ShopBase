@@ -1,4 +1,4 @@
-#ISC License
+ISC License
 
 Copyright (c) 2019, Jonas Regner
 

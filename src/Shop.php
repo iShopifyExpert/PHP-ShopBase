@@ -13,11 +13,11 @@ class Shop
     /**
      * Shop constructor.
      *
-     * @param array $products
+     * @param ArrayCollection $products
      *
      * @throws ProductAlreadyExistsException
      */
-    public function __construct(array $products)
+    public function __construct(ArrayCollection $products)
     {
         $this->setProducts($products);
     }
@@ -89,7 +89,7 @@ class Shop
      *
      * @throws ProductAlreadyExistsException
      */
-    public function setProducts(array $products): self
+    public function setProducts(ArrayCollection $products): self
     {
         $this->products = new ArrayCollection();
 
@@ -108,5 +108,24 @@ class Shop
     public function getProducts(): ArrayCollection
     {
         return $this->products;
+    }
+
+    public function updateProductStock(ArrayCollection $collection)
+    {
+        $products = new ArrayCollection();
+
+        foreach ($this->products as $product) {
+            $articleNumber = $product->getArticleNumber();
+
+            if ($collection->containsKey($articleNumber)) {
+                $stock = $product->getStock();
+
+                $product->setStock($stock - $collection->get($product->getArticleNumber()));
+            }
+
+            $products[] = $product;
+        }
+
+        $this->products = $products;
     }
 }
