@@ -1,8 +1,11 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use jregner\ShopBase\Article;
 use jregner\ShopBase\Product;
 use jregner\ShopBase\Types\Price;
+use jregner\ShopBase\Interfaces\IToArticle;
+use jregner\ShopBase\Interfaces\IProduct;
 
 class ProductTest extends TestCase
 {
@@ -18,6 +21,16 @@ class ProductTest extends TestCase
     {
         $this->assertInstanceOf(
             Product::class,
+            $this->product
+        );
+
+        $this->assertInstanceOf(
+            IProduct::class,
+            $this->product
+        );
+
+        $this->assertInstanceOf(
+            IToArticle::class,
             $this->product
         );
     }
@@ -184,6 +197,16 @@ class ProductTest extends TestCase
                 1 => 'My Category Two',
             ],
             $this->product->getCategories()->toArray()
+        );
+    }
+
+    public function testToArticle()
+    {
+        $article = new Article('ArticleNumber', new Price(1200, 'EUR'));
+
+        $this->assertEquals(
+            $article,
+            $this->product->toArticle()
         );
     }
 }

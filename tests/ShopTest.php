@@ -117,29 +117,4 @@ class ShopTest extends TestCase
             $this->shop->getProducts()->toArray()
         );
     }
-
-    public function testUpdateProductStock()
-    {
-        $products = new ArrayCollection([
-            '0' => 2,
-            '1' => 3,
-        ]);
-
-        $this->shop->updateProductStock($products);
-
-        $this->assertEquals(
-            -2,
-            $this->shop->getProduct('0')->getStock()
-        );
-
-        $this->assertEquals(
-            2,
-            $this->shop->getProduct('1')->getStock()
-        );
-
-        $this->assertEquals(
-            10,
-            $this->shop->getProduct('2')->getStock()
-        );
-    }
 }

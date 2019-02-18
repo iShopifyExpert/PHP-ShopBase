@@ -4,6 +4,7 @@ namespace jregner\ShopBase;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use jregner\ShopBase\Exceptions\Product\ProductAlreadyExistsException;
+use jregner\ShopBase\Interfaces\IProduct;
 
 class Shop
 {
@@ -25,13 +26,13 @@ class Shop
     /**
      * Add new shop product.
      *
-     * @param Product $product
+     * @param IProduct $product
      *
      * @return Shop
      *
      * @throws ProductAlreadyExistsException
      */
-    public function addProduct(Product $product): self
+    public function addProduct(IProduct $product): self
     {
         if ($this->hasProduct($product->getArticleNumber())) {
             throw new ProductAlreadyExistsException('The product with article number ' . $product->getArticleNumber() . ' is already added!');
@@ -73,9 +74,9 @@ class Shop
      *
      * @param string $articleNumber
      *
-     * @return Product
+     * @return IProduct
      */
-    public function getProduct(string $articleNumber): Product
+    public function getProduct(string $articleNumber): IProduct
     {
         return $this->products->get($articleNumber);
     }
@@ -83,7 +84,7 @@ class Shop
     /**
      * Set shop products.
      *
-     * @param array $products
+     * @param ArrayCollection $products
      *
      * @return $this
      *
@@ -108,24 +109,5 @@ class Shop
     public function getProducts(): ArrayCollection
     {
         return $this->products;
-    }
-
-    public function updateProductStock(ArrayCollection $collection)
-    {
-        $products = new ArrayCollection();
-
-        foreach ($this->products as $product) {
-            $articleNumber = $product->getArticleNumber();
-
-            if ($collection->containsKey($articleNumber)) {
-                $stock = $product->getStock();
-
-                $product->setStock($stock - $collection->get($product->getArticleNumber()));
-            }
-
-            $products[] = $product;
-        }
-
-        $this->products = $products;
     }
 }

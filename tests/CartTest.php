@@ -22,7 +22,7 @@ class CartTest extends TestCase
         $cart = new Cart();
         $count = count($products);
         for ($i = 0; $i < $count; ++$i) {
-            $cart->add($products[$i], $i + 1);
+            $cart->add($products[$i]->toArticle(), $i + 1);
         }
 
         $this->cart = $cart;
@@ -64,14 +64,12 @@ class CartTest extends TestCase
         $cart = new Cart();
         $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
 
-        $cart->add($product, 2);
+        $article = $product->toArticle();
+        $cart->add($article, 2);
 
         $this->assertEquals(
             [
-                '1234' => [
-                    'amount' => 2,
-                    'product' => $product,
-                ],
+                '1234' => $article->setAmount(2),
             ],
             $cart->get()->toArray()
         );
@@ -82,7 +80,7 @@ class CartTest extends TestCase
         $cart = new Cart();
         $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
 
-        $cart->add($product, 2);
+        $cart->add($product->toArticle(), 2);
 
         $cart->remove('1234');
 
@@ -97,18 +95,13 @@ class CartTest extends TestCase
         $cart = new Cart();
         $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
 
-        $cart->add($product);
+        $cart->add($product->toArticle());
 
         $cart->raiseAmount($product->getArticleNumber());
 
         $this->assertEquals(
-            [
-                '1234' => [
-                    'amount' => 2,
-                    'product' => $product,
-                ],
-            ],
-            $cart->get()->toArray()
+            2,
+            $cart->get()->toArray()[$product->getArticleNumber()]->getAmount()
         );
     }
 
@@ -117,38 +110,13 @@ class CartTest extends TestCase
         $cart = new Cart();
         $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
 
-        $cart->add($product, 2);
+        $cart->add($product->toArticle(), 2);
 
         $cart->reduceAmount($product->getArticleNumber());
 
         $this->assertEquals(
-            [
-                '1234' => [
-                    'amount' => 1,
-                    'product' => $product,
-                ],
-            ],
-            $cart->get()->toArray()
-        );
-    }
-
-    public function testCheckout()
-    {
-        $data = $this->cart->checkout();
-
-        $this->assertEquals(
-            [
-                '0' => 1,
-                '1' => 2,
-                '2' => 3,
-                '3' => 4,
-            ],
-            $data->toArray()
-        );
-
-        $this->assertEquals(
-            [],
-            $this->cart->get()->toArray()
+            1,
+            $cart->get()->toArray()[$product->getArticleNumber()]->getAmount()
         );
     }
 }

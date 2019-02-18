@@ -3,34 +3,34 @@
 namespace jregner\ShopBase;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use jregner\ShopBase\Interfaces\IArticle;
 use jregner\ShopBase\Types\Price;
 
 class Cart
 {
-    protected $cart;
+    protected $articles;
 
     /**
      * Cart constructor.
      */
     public function __construct()
     {
-        $this->cart = new ArrayCollection();
+        $this->articles = new ArrayCollection();
     }
 
     /**
      * Add product to shopping cart.
      *
-     * @param Product $product
-     * @param int     $amount
+     * @param IArticle $article
+     * @param int      $amount
      *
      * @return Cart
      */
-    public function add(Product $product, int $amount = 1): self
+    public function add(IArticle $article, int $amount = 1): self
     {
-        $this->cart->set($product->getArticleNumber(), [
-            'amount' => $amount,
-            'product' => $product,
-        ]);
+        $article->setAmount($amount);
+
+        $this->articles->set($article->getArticleNumber(), $article);
 
         return $this;
     }
@@ -44,7 +44,7 @@ class Cart
      */
     public function remove(string $articleNumber): self
     {
-        $this->cart->remove($articleNumber);
+        $this->articles->remove($articleNumber);
 
         return $this;
     }
@@ -56,7 +56,7 @@ class Cart
      */
     public function get(): ArrayCollection
     {
-        return $this->cart;
+        return $this->articles;
     }
 
     /**
@@ -68,11 +68,11 @@ class Cart
      */
     public function raiseAmount(string $articleNumber): self
     {
-        $article = $this->cart->get($articleNumber);
+        $article = $this->articles->get($articleNumber);
 
-        ++$article['amount'];
+        $article->setAmount($article->getAmount() + 1);
 
-        $this->cart->set($articleNumber, $article);
+        $this->articles->set($articleNumber, $article);
 
         return $this;
     }
@@ -86,51 +86,26 @@ class Cart
      */
     public function reduceAmount(string $articleNumber): self
     {
-        $article = $this->cart->get($articleNumber);
+        $article = $this->articles->get($articleNumber);
 
-        --$article['amount'];
+        $article->setAmount($article->getAmount() - 1);
 
-        $this->cart->set($articleNumber, $article);
+        $this->articles->set($articleNumber, $article);
 
         return $this;
     }
 
-    /**
-     * Get shopping cart sum.
-     *
-     * @return Price
-     *
-     * @throws Exceptions\Types\InvalidCurrencyException
-     */
     public function getSum(): Price
     {
-        $price = array_reduce($this->cart->getValues(), function ($sum, $item) use (&$currency) {
-            /** @var Product $product */
-            $product = $item['product'];
-            $amount = $item['amount'];
-            $currency = $product->getPrice()->getCurrency();
+        $sum = 0;
+        $currency = '';
 
-            return $sum + $product->getPrice()->getValue() * $amount;
-        });
-
-        return new Price($price, $currency);
-    }
-
-    /**
-     * Checkout shopping cart.
-     *
-     * @return ArrayCollection
-     */
-    public function checkout(): ArrayCollection
-    {
-        $data = new ArrayCollection();
-
-        foreach ($this->cart as $articleNumber => $item) {
-            $data->set($articleNumber, $item['amount']);
+        /** @var IArticle $article */
+        foreach ($this->articles as $article) {
+            $sum += $article->getSum()->getValue();
+            $currency = $article->getSum()->getCurrency();
         }
 
-        $this->cart->clear();
-
-        return $data;
+        return new Price($sum, $currency);
     }
 }
