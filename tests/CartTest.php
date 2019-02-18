@@ -36,19 +36,6 @@ class CartTest extends TestCase
         );
     }
 
-    public function testGetSum()
-    {
-        $this->assertEquals(
-            40006150,
-            $this->cart->getSum()->getValue()
-        );
-
-        $this->assertEquals(
-            'EUR',
-            $this->cart->getSum()->getCurrency()
-        );
-    }
-
     public function testGet()
     {
         $cart = new Cart();
@@ -119,4 +106,47 @@ class CartTest extends TestCase
             $cart->get()->toArray()[$product->getArticleNumber()]->getAmount()
         );
     }
+
+    public function testClear()
+    {
+        $cart = new Cart();
+        $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
+
+        $cart->add($product->toArticle());
+
+        $cart->clear();
+
+        $this->assertEquals(
+            [],
+            $cart->get()->toArray()
+        );
+    }
+
+    public function testGetSum()
+    {
+        $this->assertEquals(
+            new Price(40006150, 'EUR'),
+            $this->cart->getSum()
+        );
+    }
+
+    public function testSerialize()
+    {
+        $data = serialize($this->cart);
+
+        $this->assertEquals(
+            'C:21:"jregner\ShopBase\Cart":13:{[{},{},{},{}]}',
+            $data
+        );
+    }
+
+//    public function testUnserialize()
+//    {
+//        $cart = unserialize('C:21:"jregner\ShopBase\Cart":13:{[{},{},{},{}]}');
+//
+//        $this->assertEquals(
+//            $this->cart,
+//            $cart
+//        );
+//    }
 }

@@ -4,9 +4,10 @@ namespace jregner\ShopBase;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use jregner\ShopBase\Interfaces\IArticle;
+use jregner\ShopBase\Interfaces\ICart;
 use jregner\ShopBase\Types\Price;
 
-class Cart
+class Cart implements ICart
 {
     protected $articles;
 
@@ -19,7 +20,7 @@ class Cart
     }
 
     /**
-     * Add product to shopping cart.
+     * Add article to shopping cart.
      *
      * @param IArticle $article
      * @param int      $amount
@@ -36,7 +37,7 @@ class Cart
     }
 
     /**
-     * Remove product from shopping cart.
+     * Remove article from shopping cart.
      *
      * @param string $articleNumber
      *
@@ -60,7 +61,7 @@ class Cart
     }
 
     /**
-     * Raise product amount.
+     * Raise article amount.
      *
      * @param string $articleNumber
      *
@@ -78,7 +79,7 @@ class Cart
     }
 
     /**
-     * Reduce product amount.
+     * Reduce article amount.
      *
      * @param string $articleNumber
      *
@@ -95,6 +96,20 @@ class Cart
         return $this;
     }
 
+    /**
+     * Clear shopping cart
+     */
+    public function clear(): void
+    {
+        $this->articles->clear();
+    }
+
+    /**
+     * Get shopping cart sum
+     *
+     * @return Price
+     * @throws Exceptions\Types\InvalidCurrencyException
+     */
     public function getSum(): Price
     {
         $sum = 0;
