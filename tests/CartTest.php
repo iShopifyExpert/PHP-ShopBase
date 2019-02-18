@@ -129,24 +129,4 @@ class CartTest extends TestCase
             $this->cart->getSum()
         );
     }
-
-    public function testSerialize()
-    {
-        $data = serialize($this->cart);
-
-        $this->assertEquals(
-            'C:21:"jregner\ShopBase\Cart":13:{[{},{},{},{}]}',
-            $data
-        );
-    }
-
-//    public function testUnserialize()
-//    {
-//        $cart = unserialize('C:21:"jregner\ShopBase\Cart":13:{[{},{},{},{}]}');
-//
-//        $this->assertEquals(
-//            $this->cart,
-//            $cart
-//        );
-//    }
 }
