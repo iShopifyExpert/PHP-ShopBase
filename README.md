@@ -1,5 +1,6 @@
 # PHP ShopBase
 [![Build Status](https://travis-ci.org/Tera3yte/PHP-ShopBase.svg?branch=master)](https://travis-ci.org/Tera3yte/PHP-ShopBase)
+[![codecov](https://codecov.io/gh/Tera3yte/PHP-ShopBase/branch/master/graph/badge.svg)](https://codecov.io/gh/Tera3yte/PHP-ShopBase)
 
 This is a simple library for setting up a shop in PHP. You can use the classes as they are or extend from them to easily form the shop as you need it.
 ## Usage
