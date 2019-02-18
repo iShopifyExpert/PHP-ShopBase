@@ -13,7 +13,7 @@ before_script:
   - composer install --no-interaction
 
 script:
-  - phpunit --bootstrap vendor/autoload.php --coverage-clover coverage.xml tests
+  - phpunit --bootstrap vendor/autoload.php --coverage-clover coverage.xml --whitelist src tests
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
