@@ -4,7 +4,6 @@ use PHPUnit\Framework\TestCase;
 use Doctrine\Common\Collections\ArrayCollection;
 use jregner\ShopBase\Shop;
 use jregner\ShopBase\Cart;
-use jregner\ShopBase\Order;
 use jregner\ShopBase\Product;
 use jregner\ShopBase\Article;
 use jregner\ShopBase\Types\Price;

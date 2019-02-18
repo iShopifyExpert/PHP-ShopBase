@@ -118,8 +118,8 @@ class Shop
      * Checkout shopping cart.
      *
      * @param ICart $cart
-     * @param null $billingAddress
-     * @param null $shippingAddress
+     * @param null  $billingAddress
+     * @param null  $shippingAddress
      *
      * @return IOrder
      */
