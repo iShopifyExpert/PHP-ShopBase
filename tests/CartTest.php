@@ -55,10 +55,36 @@ class CartTest extends TestCase
         $cart->add($article, 2);
 
         $this->assertEquals(
-            [
-                '1234' => $article->setAmount(2),
-            ],
-            $cart->get()->toArray()
+            2,
+            $cart->get()->get('1234')->getAmount()
+        );
+    }
+
+    public function testAddWithNull()
+    {
+        $cart = new Cart();
+        $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
+
+        $article = $product->toArticle();
+        $cart->add($article);
+
+        $this->assertEquals(
+            1,
+            $cart->get()->get('1234')->getAmount()
+        );
+    }
+
+    public function testAddWithNegativAmount()
+    {
+        $cart = new Cart();
+        $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
+
+        $article = $product->toArticle();
+        $cart->add($article, -2);
+
+        $this->assertEquals(
+            1,
+            $cart->get()->get('1234')->getAmount()
         );
     }
 

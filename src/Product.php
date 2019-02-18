@@ -121,9 +121,9 @@ class Product implements IProduct, IToArticle
      *
      * @param int $stock
      *
-     * @return Product
+     * @return IProduct
      */
-    public function setStock(int $stock): self
+    public function setStock(int $stock): IProduct
     {
         $this->stock = $stock;
 

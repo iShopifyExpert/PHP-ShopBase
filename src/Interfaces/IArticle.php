@@ -23,6 +23,13 @@ interface IArticle
     public function setAmount(int $amount): self;
 
     /**
+     * Get article amount.
+     *
+     * @return int
+     */
+    public function getAmount(): int;
+
+    /**
      * Get article sum.
      *
      * @return Price

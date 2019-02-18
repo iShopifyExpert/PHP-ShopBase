@@ -4,7 +4,9 @@ namespace jregner\ShopBase;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use jregner\ShopBase\Exceptions\Product\ProductAlreadyExistsException;
+use jregner\ShopBase\Interfaces\IArticle;
 use jregner\ShopBase\Interfaces\ICart;
+use jregner\ShopBase\Interfaces\IOrder;
 use jregner\ShopBase\Interfaces\IProduct;
 
 class Shop
@@ -113,19 +115,34 @@ class Shop
     }
 
     /**
-     * Checkout shopping cart
+     * Checkout shopping cart.
      *
      * @param ICart $cart
-     * @param $billingAddress
+     * @param null $billingAddress
      * @param null $shippingAddress
-     * @return Order
+     *
+     * @return IOrder
      */
-/*    public function checkout(ICart $cart, $billingAddress, $shippingAddress = null): Order
+    public function checkout(ICart $cart, $billingAddress = null, $shippingAddress = null): IOrder
     {
-        $order = new Order(clone $cart, $billingAddress, $shippingAddress);
+        $articles = $cart->get();
+
+        /** @var IArticle $article */
+        foreach ($articles as $articleNumber => $article) {
+            /** @var IProduct $product */
+            $product = $this->products->get($articleNumber);
+
+            if (null !== $product->getStock()) {
+                $product->setStock($product->getStock() - $article->getAmount());
+            }
+
+            $this->products->set($product->getArticleNumber(), $product);
+        }
+
+        $order = new Order($articles);
 
         $cart->clear();
 
         return $order;
-    }*/
+    }
 }

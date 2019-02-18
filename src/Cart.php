@@ -27,9 +27,11 @@ class Cart implements ICart
      *
      * @return Cart
      */
-    public function add(IArticle $article, int $amount = 1): self
+    public function add(IArticle $article, int $amount = null): self
     {
-        $article->setAmount($amount);
+        if (null !== $amount && 0 < $amount) {
+            $article->setAmount($amount);
+        }
 
         $this->articles->set($article->getArticleNumber(), $article);
 
@@ -97,7 +99,7 @@ class Cart implements ICart
     }
 
     /**
-     * Clear shopping cart
+     * Clear shopping cart.
      */
     public function clear(): void
     {
@@ -105,9 +107,10 @@ class Cart implements ICart
     }
 
     /**
-     * Get shopping cart sum
+     * Get shopping cart sum.
      *
      * @return Price
+     *
      * @throws Exceptions\Types\InvalidCurrencyException
      */
     public function getSum(): Price

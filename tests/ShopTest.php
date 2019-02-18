@@ -3,7 +3,10 @@
 use PHPUnit\Framework\TestCase;
 use Doctrine\Common\Collections\ArrayCollection;
 use jregner\ShopBase\Shop;
+use jregner\ShopBase\Cart;
+use jregner\ShopBase\Order;
 use jregner\ShopBase\Product;
+use jregner\ShopBase\Article;
 use jregner\ShopBase\Types\Price;
 use jregner\ShopBase\Exceptions\Product\ProductAlreadyExistsException;
 
@@ -115,6 +118,32 @@ class ShopTest extends TestCase
         $this->assertEquals(
             $this->products,
             $this->shop->getProducts()->toArray()
+        );
+    }
+
+    public function testCheckout()
+    {
+        $cart = new Cart();
+
+        $article = new Article('0', new Price(0, 'EUR'));
+
+        $cart->add($article, 5);
+
+        $order = $this->shop->checkout($cart);
+
+        $this->assertEquals(
+            -5,
+            $this->shop->getProduct('0')->getStock()
+        );
+
+        $this->assertEquals(
+            [],
+            $cart->get()->toArray()
+        );
+
+        $this->assertEquals(
+            $cart->get(),
+            $order->getArticles()
         );
     }
 }
