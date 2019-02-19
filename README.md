@@ -1,5 +1,4 @@
 # PHP ShopBase
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b4a307a005934a3bb0e8dbae059a5979)](https://app.codacy.com/app/Tera3yte/PHP-ShopBase?utm_source=github.com&utm_medium=referral&utm_content=Tera3yte/PHP-ShopBase&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.org/Tera3yte/PHP-ShopBase.svg?branch=master)](https://travis-ci.org/Tera3yte/PHP-ShopBase)
 [![codecov](https://codecov.io/gh/Tera3yte/PHP-ShopBase/branch/master/graph/badge.svg)](https://codecov.io/gh/Tera3yte/PHP-ShopBase)
 
