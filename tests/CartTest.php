@@ -2,29 +2,33 @@
 
 use PHPUnit\Framework\TestCase;
 use jregner\ShopBase\Cart;
+use jregner\ShopBase\Article;
 use jregner\ShopBase\Product;
 use jregner\ShopBase\Types\Price;
 
 class CartTest extends TestCase
 {
     /** @var Cart */
-    protected $cart;
+    private $cart;
+
+    private $articles;
 
     protected function setUp(): void
     {
-        $products = [
-            new Product('0', 'Product Number 0', new Price(1200, 'EUR')),
-            new Product('1', 'Product Number 1', new Price(2400, 'EUR')),
-            new Product('2', 'Product Number 2', new Price(50, 'EUR')),
-            new Product('3', 'Product Number 3', new Price(10000000, 'EUR')),
-        ];
-
-        $cart = new Cart();
-        $count = count($products);
-        for ($i = 0; $i < $count; ++$i) {
-            $cart->add($products[$i]->toArticle(), $i + 1);
+        $articles = [];
+        for ($i = 0; $i < 5; ++$i) {
+            $articles[] = new Article(
+                new Product((string) $i, 'Product Number ' . $i, new Price(1000 * $i, 'EUR')),
+                $i + 1
+            );
         }
 
+        $cart = new Cart();
+        foreach ($articles as $article) {
+            $cart->addArticle($article);
+        }
+
+        $this->articles = $articles;
         $this->cart = $cart;
     }
 
@@ -36,122 +40,66 @@ class CartTest extends TestCase
         );
     }
 
-    public function testGet()
+    public function testGetEmptyArticles()
     {
         $cart = new Cart();
 
         $this->assertEquals(
             [],
-            $cart->get()->toArray()
+            $cart->getArticles()->toArray()
         );
     }
 
-    public function testAdd()
+    public function testGetArticles()
+    {
+        $this->assertEquals(
+            $this->articles,
+            $this->cart->getArticles()->toArray()
+        );
+    }
+
+    public function testAddArticle()
     {
         $cart = new Cart();
-        $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
+        $article = new Article(new Product('1234', 'Product Number 1234', new Price(1200, 'EUR')), 1);
 
-        $article = $product->toArticle();
-        $cart->add($article, 2);
+        $cart->addArticle($article);
 
         $this->assertEquals(
-            2,
-            $cart->get()->get('1234')->getAmount()
+            ['1234' => new Article(new Product('1234', 'Product Number 1234', new Price(1200, 'EUR')), 1)],
+            $cart->getArticles()->toArray()
         );
     }
 
-    public function testAddWithNull()
+    public function testRemoveArticle()
     {
         $cart = new Cart();
-        $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
+        $article = new Article(new Product('1234', 'Product Number 1234', new Price(1200, 'EUR')), 1);
 
-        $article = $product->toArticle();
-        $cart->add($article);
+        $cart->addArticle($article);
 
-        $this->assertEquals(
-            1,
-            $cart->get()->get('1234')->getAmount()
-        );
-    }
-
-    public function testAddWithNegativAmount()
-    {
-        $cart = new Cart();
-        $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
-
-        $article = $product->toArticle();
-        $cart->add($article, -2);
-
-        $this->assertEquals(
-            1,
-            $cart->get()->get('1234')->getAmount()
-        );
-    }
-
-    public function testRemove()
-    {
-        $cart = new Cart();
-        $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
-
-        $cart->add($product->toArticle(), 2);
-
-        $cart->remove('1234');
+        $cart->removeArticle($article->getProduct()->getArticleNumber());
 
         $this->assertEquals(
             [],
-            $cart->get()->toArray()
+            $cart->getArticles()->toArray()
         );
     }
 
-    public function testRaiseAmount()
+    public function testClearArticles()
     {
-        $cart = new Cart();
-        $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
-
-        $cart->add($product->toArticle());
-
-        $cart->raiseAmount($product->getArticleNumber());
-
-        $this->assertEquals(
-            2,
-            $cart->get()->toArray()[$product->getArticleNumber()]->getAmount()
-        );
-    }
-
-    public function testReduceAmount()
-    {
-        $cart = new Cart();
-        $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
-
-        $cart->add($product->toArticle(), 2);
-
-        $cart->reduceAmount($product->getArticleNumber());
-
-        $this->assertEquals(
-            1,
-            $cart->get()->toArray()[$product->getArticleNumber()]->getAmount()
-        );
-    }
-
-    public function testClear()
-    {
-        $cart = new Cart();
-        $product = new Product('1234', 'Product Number 1234', new Price(1200, 'EUR'));
-
-        $cart->add($product->toArticle());
-
-        $cart->clear();
+        $this->cart->clearArticles();
 
         $this->assertEquals(
             [],
-            $cart->get()->toArray()
+            $this->cart->getArticles()->toArray()
         );
     }
 
     public function testGetSum()
     {
         $this->assertEquals(
-            new Price(40006150, 'EUR'),
+            new Price(40000, 'EUR'),
             $this->cart->getSum()
         );
     }

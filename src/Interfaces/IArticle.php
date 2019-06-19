@@ -11,7 +11,7 @@ interface IArticle
      *
      * @return string
      */
-    public function getArticleNumber(): string;
+    public function getProduct(): IProduct;
 
     /**
      * Set article amount.

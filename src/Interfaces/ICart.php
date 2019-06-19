@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 interface ICart
 {
-    public function get(): ArrayCollection;
+    public function getArticles(): ArrayCollection;
 
-    public function clear(): void;
+    public function clearArticles(): void;
 }

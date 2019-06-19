@@ -8,9 +8,16 @@ use jregner\ShopBase\Interfaces\IArticle;
 
 class ArticleTest extends TestCase
 {
+    private $product;
+
+    protected function setUp(): void
+    {
+        $this->product = new Product('1234', 'Product A', new Price(1200, 'EUR'));
+    }
+
     public function testConstruct()
     {
-        $article = new Article('1234', new Price(1200, 'EUR'));
+        $article = new Article($this->product, 1);
 
         $this->assertInstanceOf(
             Article::class,
@@ -23,33 +30,19 @@ class ArticleTest extends TestCase
         );
     }
 
-    public function testFromProduct()
+    public function testGetProduct()
     {
-        $product = new Product('1234', 'Product 1234', new Price(1200, 'EUR'));
-
-        $article = Article::fromProduct($product);
-
-        $article2 = new Article('1234', new Price(1200, 'EUR'));
+        $article = new Article($this->product, 1);
 
         $this->assertEquals(
-            $article2,
-            $article
-        );
-    }
-
-    public function testGetArticleNumber()
-    {
-        $article = new Article('1234', new Price(1200, 'EUR'));
-
-        $this->assertEquals(
-            '1234',
-            $article->getArticleNumber()
+            $this->product,
+            $article->getProduct()
         );
     }
 
     public function testGetAmount()
     {
-        $article = new Article('1234', new Price(1200, 'EUR'));
+        $article = new Article($this->product, 1);
 
         $this->assertEquals(
             1,
@@ -59,7 +52,7 @@ class ArticleTest extends TestCase
 
     public function testSetAmount()
     {
-        $article = new Article('1234', new Price(1200, 'EUR'));
+        $article = new Article($this->product, 1);
 
         $article->setAmount(2);
 
@@ -69,36 +62,62 @@ class ArticleTest extends TestCase
         );
     }
 
-    public function testGetPrice()
+    public function testIncrementAmount()
     {
-        $article = new Article('1234', new Price(1200, 'EUR'));
+        $article = new Article($this->product, 1);
+
+        $article->incrementAmount();
 
         $this->assertEquals(
-            new Price(1200, 'EUR'),
-            $article->getPrice()
+            2,
+            $article->getAmount()
+        );
+
+        // --
+
+        $article = new Article($this->product, 1);
+
+        $article->incrementAmount(4);
+
+        $this->assertEquals(
+            5,
+            $article->getAmount()
         );
     }
 
-    public function testSetPrice()
+    public function testDecrementAmount()
     {
-        $article = new Article('1234', new Price(1200, 'EUR'));
+        $article = new Article($this->product, 2);
 
-        $article->setPrice(new Price(2400, 'EUR'));
+        $article->decrementAmount();
 
         $this->assertEquals(
-            new Price(2400, 'EUR'),
-            $article->getPrice()
+            1,
+            $article->getAmount()
+        );
+
+        // --
+
+        $article = new Article($this->product, 5);
+
+        $article->decrementAmount(4);
+
+        $this->assertEquals(
+            1,
+            $article->getAmount()
         );
     }
 
     public function testGetSum()
     {
-        $article = new Article('1234', new Price(1200, 'EUR'));
+        $article = new Article($this->product, 1);
 
         $this->assertEquals(
             new Price(1200, 'EUR'),
             $article->getSum()
         );
+
+        // --
 
         $article->setAmount(2);
 

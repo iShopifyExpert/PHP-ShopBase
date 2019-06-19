@@ -1,6 +1,7 @@
 {
     "name": "jregner/php-shopbase",
     "description": "Simple library which helps setting up a shop in PHP",
+    "version": "0.7.0",
     "type": "library",
     "license": "ISC",
     "authors": [

@@ -2,6 +2,8 @@
 
 namespace jregner\ShopBase\Interfaces;
 
+use jregner\ShopBase\Types\Price;
+
 interface IProduct
 {
     /**
@@ -10,6 +12,13 @@ interface IProduct
      * @return string
      */
     public function getArticleNumber(): string;
+
+    /**
+     * Get product price.
+     *
+     * @return Price
+     */
+    public function getPrice(): Price;
 
     /**
      * Get product stock.

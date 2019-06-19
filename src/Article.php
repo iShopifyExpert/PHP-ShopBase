@@ -3,32 +3,24 @@
 namespace jregner\ShopBase;
 
 use jregner\ShopBase\Interfaces\IArticle;
-use jregner\ShopBase\Interfaces\IToArticle;
+use jregner\ShopBase\Interfaces\IProduct;
 use jregner\ShopBase\Types\Price;
 
 class Article implements IArticle
 {
-    private $articleNumber;
+    private $product;
 
-    protected $amount = 1;
+    protected $amount;
 
-    /** @var Price */
-    protected $price;
-
-    public function __construct(string $articleNumber, Price $price)
+    public function __construct(IProduct $product, int $amount)
     {
-        $this->articleNumber = $articleNumber;
-        $this->price = $price;
+        $this->product = $product;
+        $this->amount = $amount;
     }
 
-    public static function fromProduct(IToArticle $product): IArticle
+    public function getProduct(): IProduct
     {
-        return $product->toArticle();
-    }
-
-    public function getArticleNumber(): string
-    {
-        return $this->articleNumber;
+        return $this->product;
     }
 
     public function setAmount(int $amount): IArticle
@@ -43,20 +35,25 @@ class Article implements IArticle
         return $this->amount;
     }
 
-    public function setPrice(Price $price): IArticle
+    public function incrementAmount(int $number = 1): self
     {
-        $this->price = $price;
+        $this->amount += $number;
 
         return $this;
     }
 
-    public function getPrice(): Price
+    public function decrementAmount(int $number = 1): self
     {
-        return $this->price;
+        $this->amount -= $number;
+
+        return $this;
     }
 
     public function getSum(): Price
     {
-        return new Price($this->amount * $this->price->getValue(), $this->price->getCurrency());
+        return new Price(
+            $this->product->getPrice()->getValue() * $this->amount,
+            $this->product->getPrice()->getCurrency()
+        );
     }
 }

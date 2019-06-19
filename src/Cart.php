@@ -20,32 +20,27 @@ class Cart implements ICart
     }
 
     /**
-     * Add article to shopping cart.
+     * Add a new article to shopping cart.
      *
      * @param IArticle $article
-     * @param int      $amount
      *
      * @return Cart
      */
-    public function add(IArticle $article, int $amount = null): self
+    public function addArticle(IArticle $article): self
     {
-        if (null !== $amount && 0 < $amount) {
-            $article->setAmount($amount);
-        }
-
-        $this->articles->set($article->getArticleNumber(), $article);
+        $this->articles->set($article->getProduct()->getArticleNumber(), $article);
 
         return $this;
     }
 
     /**
-     * Remove article from shopping cart.
+     * Remove a article from shopping cart.
      *
      * @param string $articleNumber
      *
      * @return Cart
      */
-    public function remove(string $articleNumber): self
+    public function removeArticle(string $articleNumber): self
     {
         $this->articles->remove($articleNumber);
 
@@ -53,57 +48,47 @@ class Cart implements ICart
     }
 
     /**
-     * Get products from shopping cart.
+     * Get article.
+     *
+     * @param string $articleNumber
+     *
+     * @return IArticle|null
+     */
+    public function getArticle(string $articleNumber): ?IArticle
+    {
+        if (!$this->articles->containsKey($articleNumber)) {
+            return null;
+        }
+
+        return $this->articles->get($articleNumber);
+    }
+
+    /**
+     * Get articles from shopping cart.
      *
      * @return ArrayCollection
      */
-    public function get(): ArrayCollection
+    public function getArticles(): ArrayCollection
     {
         return $this->articles;
     }
 
     /**
-     * Raise article amount.
-     *
-     * @param string $articleNumber
-     *
-     * @return Cart
-     */
-    public function raiseAmount(string $articleNumber): self
-    {
-        $article = $this->articles->get($articleNumber);
-
-        $article->setAmount($article->getAmount() + 1);
-
-        $this->articles->set($articleNumber, $article);
-
-        return $this;
-    }
-
-    /**
-     * Reduce article amount.
-     *
-     * @param string $articleNumber
-     *
-     * @return Cart
-     */
-    public function reduceAmount(string $articleNumber): self
-    {
-        $article = $this->articles->get($articleNumber);
-
-        $article->setAmount($article->getAmount() - 1);
-
-        $this->articles->set($articleNumber, $article);
-
-        return $this;
-    }
-
-    /**
      * Clear shopping cart.
      */
-    public function clear(): void
+    public function clearArticles(): void
     {
         $this->articles->clear();
+    }
+
+    /**
+     * Get article count.
+     *
+     * @return int
+     */
+    public function getCount(): int
+    {
+        return $this->articles->count();
     }
 
     /**

@@ -3,12 +3,10 @@
 namespace jregner\ShopBase;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use jregner\ShopBase\Interfaces\IArticle;
 use jregner\ShopBase\Interfaces\IProduct;
-use jregner\ShopBase\Interfaces\IToArticle;
 use jregner\ShopBase\Types\Price;
 
-class Product implements IProduct, IToArticle
+class Product implements IProduct
 {
     private $articleNumber;
 
@@ -202,15 +200,5 @@ class Product implements IProduct, IToArticle
     public function getCategories(): ArrayCollection
     {
         return $this->categories;
-    }
-
-    /**
-     * Reduce product to a shopping cart article.
-     *
-     * @return IArticle
-     */
-    public function toArticle(): IArticle
-    {
-        return new Article($this->articleNumber, $this->price);
     }
 }

@@ -56,7 +56,7 @@ class PriceTest extends TestCase
         );
 
         $this->assertEquals(
-            '1 199,99 €',
+            '1 199,99 €',
             $price->format('fr')
         );
     }
@@ -76,7 +76,7 @@ class PriceTest extends TestCase
         );
 
         $this->assertEquals(
-            '1 199,99 $US',
+            '1 199,99 $US',
             $price->format('fr')
         );
     }
